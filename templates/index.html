@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Email Prioritizer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   
+</head>
+
+
+<body>
+
+<div class="header">
+
+    <h1>📧 AI Email Prioritizer</h1>
+
+    <p>
+        Turn your inbox into organized, actionable tasks.
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- Email Input -->
+
+    <div class="card">
+
+        <h2>Analyze an Email</h2>
+
+        <p class="description">
+            Paste an email below and let AI identify its
+            priority, category, action and deadline.
+        </p>
+
+
+        <form action="/analyze"
+              method="POST">
+
+            <textarea
+                name="email"
+                placeholder="Paste your email here..."
+                required></textarea>
+
+
+            <button type="submit">
+
+                🤖 Analyze Email
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if error %}
+
+    <div class="error">
+
+        ❌ {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Filters -->
+
+    <div class="filter-section">
+
+        <h2>Email Dashboard</h2>
+
+        <div class="filters">
+
+            <a href="/filter/All">
+                All
+            </a>
+
+            <a href="/filter/Urgent">
+                🔴 Urgent
+            </a>
+
+            <a href="/filter/Important">
+                🟡 Important
+            </a>
+
+            <a href="/filter/Low">
+                🟢 Low
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Email Results -->
+
+    {% if emails %}
+
+        {% for email in emails %}
+
+        <div class="email-card">
+
+
+            <div class="top-row">
+
+                <span class="
+                    priority
+                    {% if email['priority'] == 'Urgent' %}
+                        urgent
+                    {% elif email['priority'] == 'Important' %}
+                        important
+                    {% else %}
+                        low
+                    {% endif %}
+                ">
+
+                    {{ email['priority'] }}
+
+                </span>
+
+
+                <span class="category">
+
+                    {{ email['category'] }}
+
+                </span>
+
+            </div>
+
+
+            <div class="content">
+
+                <h3>Summary</h3>
+
+                <p>
+                    {{ email['summary'] }}
+                </p>
+
+
+                <h3>Required Action</h3>
+
+                <p>
+                    {{ email['action'] }}
+                </p>
+
+
+                <h3>Deadline</h3>
+
+                <p class="deadline">
+
+                    ⏰ {{ email['deadline'] }}
+
+                </p>
+
+            </div>
+
+
+            <details>
+
+                <summary>
+                    View original email
+                </summary>
+
+                <p class="original">
+
+                    {{ email['email'] }}
+
+                </p>
+
+            </details>
+
+
+            <a class="delete"
+               href="/delete/{{ email['id'] }}">
+
+                Delete
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+
+            📭 No analyzed emails yet.
+
+            <br><br>
+
+            Paste your first email above.
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<footer>
+
+    AI Email Prioritizer • AI Email Prioritizer • Built with Python + Flask + Ollama
+
+</footer>
+
+
+</body>
+
+</html>
